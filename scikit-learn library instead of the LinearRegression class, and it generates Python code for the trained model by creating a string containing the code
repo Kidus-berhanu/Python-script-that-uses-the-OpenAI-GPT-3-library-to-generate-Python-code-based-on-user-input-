@@ -1,0 +1,44 @@
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+import os
+
+# Load the diabetes dataset
+X, y = datasets.load_diabetes(return_X_y=True)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Initialize the random forest regressor model with 100 decision trees
+model = RandomForestRegressor(n_estimators=100)
+
+# Train the model on the training data
+model.fit(X_train, y_train)
+
+# Evaluate the model on the test data
+score = model.score(X_test, y_test)
+
+# Print the R^2 score of the model
+print("R^2 score: ", score)
+
+# Generate Python code for the trained model
+code = '''
+from sklearn.ensemble import RandomForestRegressor
+import pickle
+
+# Load the trained model
+with open('trained_model.pkl', 'rb') as f:
+    model = pickle.load(f)
+
+# Use the model to make predictions
+def predict(X):
+    return model.predict(X)
+'''
+
+# Save the generated code to a file
+with open('rf_model.py', 'w') as f:
+    f.write(code)
+
+# Save the trained model
+with open('trained_model.pkl', 'wb') as f:
+    pickle.dump(model, f)
