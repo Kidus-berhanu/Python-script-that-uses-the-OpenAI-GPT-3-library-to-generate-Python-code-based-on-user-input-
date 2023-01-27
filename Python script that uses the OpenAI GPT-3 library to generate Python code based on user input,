@@ -1,0 +1,59 @@
+#kidus Berhanu
+import openai_secret_manager
+import openai
+
+#  to Use the openai_secret_manager library to get the API key for the OpenAI API
+secrets = openai_secret_manager.get_secrets("openai")
+openai.api_key = secrets["api_key"]
+
+def generate_code(prompt, temperature=0.5, max_tokens=1024, top_p=1, frequency_penalty=0, presence_penalty=0):
+    completions = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=prompt,
+        temperature=temperature,
+        max_tokens=max_tokens,
+        top_p=top_p,
+        frequency_penalty=frequency_penalty,
+        presence_penalty=presence_penalty
+    )
+
+    message = completions.choices[0].text
+    return message.strip()
+#functions
+
+def generate_function_code(function_name, parameters, prompt):
+    new_prompt = f"Write a Python function named '{function_name}' with parameters {parameters} that {prompt}"
+    return generate_code(new_prompt)
+
+def generate_class_code(class_name, properties, methods, prompt):
+    new_prompt = f"Write a Python class named '{class_name}' with properties {properties} and methods {methods} that {prompt}"
+    return generate_code(new_prompt)
+
+def generate_loop_code(prompt):
+    new_prompt = f"Write a Python code that uses a loop to {prompt}"
+    return generate_code(new_prompt)
+
+def generate_conditional_code(prompt):
+    new_prompt = f"Write a Python code that uses conditional statements to {prompt}"
+    return generate_code(new_prompt)
+
+def generate_import_code(module_name, prompt):
+    new_prompt = f"Write a Python code that imports the module '{module_name}' and {prompt}"
+    return generate_code(new_prompt)
+
+def generate_try_except_code(prompt):
+    new_prompt = f"Write a Python code that uses try-except block to {prompt}"
+    return generate_code(new_prompt)
+
+def generate_list_comprehension_code(prompt):
+    new_prompt = f"Write a Python code that uses list comprehension to {prompt}"
+    return generate_code(new_prompt)
+
+def generate_dictionary_code(prompt):
+    new_prompt = f"Write a Python code that uses dictionary operations to {prompt}"
+    return generate_code(new_prompt)
+
+#  sample Example usage:
+user_input = "calculates the sum of all even numbers in a list of integers"
+generated_code = generate_function_code("sum_even_numbers", "numbers: List[int]", user_input)
+print(generated_code)
