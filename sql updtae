@@ -1,0 +1,23 @@
+# Adding more functions to generate code for
+def generate_function_code(function_name, function_args, prompt):
+    if function_name == "sum_even_numbers":
+        return f"def {function_name}({function_args}):\n    return sum(filter(lambda x: x % 2 == 0, numbers))"
+    elif function_name == "count_odd_numbers":
+        return f"def {function_name}({function_args}):\n    return len(list(filter(lambda x: x % 2 != 0, numbers)))"
+    elif function_name == "find_max_number":
+        return f"def {function_name}({function_args}):\n    return max(numbers)"
+    else:
+        return "Error: invalid function name"
+
+#  to Insert more data into the 'generated_code' table
+session = Session(bind=engine)
+prompt = "counts the number of odd numbers in a list of integers"
+code = generate_function_code("count_odd_numbers", "numbers: List[int]", prompt)
+session.add(GeneratedCode(input_prompt=prompt, output_code=code))
+
+prompt = "finds the maximum number in a list of integers"
+code = generate_function_code("find_max_number", "numbers: List[int]", prompt)
+session.add(GeneratedCode(input_prompt=prompt, output_code=code))
+
+session.commit()
+session.close()
