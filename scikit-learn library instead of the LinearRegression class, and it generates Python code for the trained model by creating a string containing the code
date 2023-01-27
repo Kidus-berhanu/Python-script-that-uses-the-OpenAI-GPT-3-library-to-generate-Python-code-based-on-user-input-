@@ -1,21 +1,22 @@
+#kidus berhanu
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 import os
 
-# Load the diabetes dataset
+#  to Load the diabetes dataset
 X, y = datasets.load_diabetes(return_X_y=True)
 
-# Split the data into training and testing sets
+#  for Spliting the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-# Initialize the random forest regressor model with 100 decision trees
+#  to Initialize the random forest regressor model with 100 decision trees
 model = RandomForestRegressor(n_estimators=100)
 
-# Train the model on the training data
+#  to Train the model on the training data
 model.fit(X_train, y_train)
 
-# Evaluate the model on the test data
+#  for Evaluatting the model on the test data
 score = model.score(X_test, y_test)
 
 # Print the R^2 score of the model
