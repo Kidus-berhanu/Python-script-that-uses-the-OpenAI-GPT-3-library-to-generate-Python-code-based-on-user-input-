@@ -1,0 +1,29 @@
+from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
+import os
+
+# Connect to the database
+DB_URI = os.environ.get('DATABASE_URL', 'sqlite:///app.db')
+engine = create_engine(DB_URI)
+
+# Create the 'generated_code' table
+Base = declarative_base()
+class GeneratedCode(Base):
+    __tablename__ = 'generated_code'
+    id = Column(Integer, primary_key=True)
+    input_prompt = Column(String, nullable=False)
+    output_code = Column(String, nullable=False)
+    date_generated = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+Base.metadata.create_all(engine)
+
+# Insert data into the 'generated_code' table
+from sqlalchemy.orm import Session
+session = Session(bind=engine)
+prompt = "calculates the sum of all even numbers in a list of integers"
+code = generate_function_code("sum_even_numbers", "numbers: List[int]", prompt)
+session.add(GeneratedCode(input_prompt=prompt, output_code=code))
+session.commit()
+session.close()
+
