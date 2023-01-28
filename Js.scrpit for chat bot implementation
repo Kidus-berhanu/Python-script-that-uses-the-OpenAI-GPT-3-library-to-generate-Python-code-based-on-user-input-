@@ -1,0 +1,48 @@
+//kidus Berhanu
+// Algorithm explanations
+const explainAlgorithm = (algorithm) => {
+  switch (algorithm) {
+    case "k-means":
+      return "k-means is an unsupervised learning algorithm that clusters data points into k clusters. It works by iteratively reassigning each data point to the cluster with the nearest mean until convergence.";
+    case "random forest":
+      return "Random Forest is an ensemble learning method for classification and regression. It creates multiple decision trees and combines their predictions to improve the overall accuracy of the model.";
+    default:
+      return "I am not familiar with that /function  algorithm. Can you please provide more information?";
+  }
+}
+
+// Code snippets
+const generateCodeSnippet = (algorithm) => {
+  switch (algorithm) {
+    case "k-means":
+      return "Here is an example of k-means implementation in Python using scikit-learn library: \n\nfrom sklearn.cluster import KMeans \nkmeans = KMeans(n_clusters=3) \nkmeans.fit(data)";
+    case "random forest":
+      return "Here is an example of Random Forest implementation in Python using scikit-learn library: \n\nfrom sklearn.ensemble import RandomForestClassifier \nclf = RandomForestClassifier(n_estimators=100) \nclf.fit(data, labels)";
+    default:
+      return "I am not familiar with that algorithm. Can you please provide more information?";
+  }
+}
+
+// bot Chat conversation
+const chatbot = (userInput) => {
+  let response;
+  if (userInput.includes("what is")) {
+    let algorithm = userInput.split(" ")[2];
+    response = `I can explain what ${algorithm} is, would you like me to?`;
+  } else if (userInput === "yes") {
+    response = "Great, which algorithm are you interested in learning about?";
+  } else if (userInput === "no") {
+    response = "Alright, let me know if you change your mind.";
+  } else if (userInput.includes("explain")) {
+    let algorithm = userInput.split(" ")[1];
+    response = explainAlgorithm(algorithm);
+  } else if (userInput.includes("code for")) {
+    let algorithm = userInput.split(" ")[2];
+    response = generateCodeSnippet(algorithm);
+  } else if (userInput === "quit") {
+    response = "Goodbye, have a great day!";
+  } else {
+    response = "I'm sorry, I didn't understand your request. Can you please rephrase it?";
+  }
+  return response;
+}
