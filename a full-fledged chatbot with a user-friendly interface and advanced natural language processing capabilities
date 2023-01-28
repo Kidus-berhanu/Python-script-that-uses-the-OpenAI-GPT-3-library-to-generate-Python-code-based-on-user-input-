@@ -1,0 +1,100 @@
+#kidus berhanu
+import nltk
+from nltk.chat.util import Chat, reflections
+
+#  create function to explain a specific algorithm
+def explain_algorithm(algorithm):
+    if algorithm == "random forest":
+        return "Random Forest is an ensemble learning method for classification, regression and other tasks that operate by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes (classification) or mean prediction (regression) of the individual trees."
+    elif algorithm == "gradient boosting":
+        return "Gradient Boosting is a machine learning technique for regression and classification problems, which produces a prediction model in the form of an ensemble of weak prediction models, typically decision trees. It builds the model in a stage-wise fashion like other boosting methods do, and it generalizes them by allowing optimization of an arbitrary differentiable loss function."
+    elif algorithm == "deep learning":
+        return "Deep Learning is a subfield of machine learning that is inspired by the structure and function of the brain called artificial neural networks. These networks are composed of multiple layers of interconnected nodes, which allow them to learn and represent very complex and abstract patterns in data."
+    else:
+        return "I'm sorry, I don't have information on that algorithm."
+
+# create  function to generate a code snippet for a specific algorithm
+def generate_code_snippet(algorithm):
+    if algorithm == "random forest":
+        return """
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+#  used to initialize the model
+clf = RandomForestClassifier(n_estimators=100)
+
+#  used train the model
+clf.fit(X_train, y_train)
+
+# use to  predict on new data
+y_pred = clf.predict(X_test)
+
+    """
+elif algorithm == "gradient boosting":
+    return """
+
+from sklearn.ensemble import GradientBoostingClassifier
+
+#  to initialize the model
+clf = GradientBoostingClassifier(n_estimators=100)
+
+#  used to train the model
+clf.fit(X_train, y_train)
+
+#  to predict on new data
+y_pred = clf.predict(X_test)
+
+    """
+elif algorithm == "deep learning":
+    return """
+from keras.models import Sequential
+from keras.layers import Dense
+
+#  used to initialize the model
+model = Sequential()
+model.add(Dense(64, input_dim=X_train.shape[1], activation='relu'))
+model.add(Dense(1, activation='sigmoid'))
+
+#  used in train the model
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+model.fit(X_train, y_train, epochs=10, batch_size=32)
+
+#  used predict on new data
+y_pred = model.predict(X_test)
+    """
+else:
+    return "I'm sorry, I don't have a code snippet for that algorithm."
+pairs = [
+[
+r"my name is (.*)",
+["Hello %1, How are you today?"]
+],
+[
+[
+r"what is (.)",
+["I can explain what %1 is, would you like me to?"]
+],
+[
+r"yes",
+["Great, which algorithm are you interested in learning about?", "Ok, what algorithm do you want me to explain?"]
+],
+[
+r"no",
+["Alright, let me know if you change your mind."]
+],
+[
+r"explain (.)",
+[explain_algorithm]
+],
+[
+r"code for (.*)",
+[generate_code_snippet]
+],
+[
+r"quit",
+["Goodbye, have a great day!"]
+]
+]
+
+chatbot = Chat(pairs, reflections)
+chatbot.converse()
