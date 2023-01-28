@@ -1,0 +1,73 @@
+#kidus Berhanuu
+import numpy as np
+
+class Tensor:
+    def __init__(self, data, requires_grad=False):
+        self.data = data
+        self.requires_grad = requires_grad
+        self.grad = None
+        self.children = set()
+        if requires_grad:
+            self.grad_fn = None
+
+    def backward(self):
+        if self.grad_fn is not None:
+            self.grad_fn(self.grad)
+        for child in self.children:
+            child.backward()
+
+    def __add__(self, other):
+        if self.requires_grad or other.requires_grad:
+            result = Tensor(self.data + other.data, True)
+            result.grad_fn = lambda grad: (grad, grad)
+            self.children.add(result)
+            other.children.add(result)
+            return result
+        else:
+            return Tensor(self.data + other.data)
+
+    def __mul__(self, other):
+        if self.requires_grad or other.requires_grad:
+            result = Tensor(self.data * other.data, True)
+            result.grad_fn = lambda grad: (grad * other.data, grad * self.data)
+            self.children.add(result)
+            other.children.add(result)
+            return result
+        else:
+            return Tensor(self.data * other.data)
+
+class NeuralNetwork:
+    def __init__(self):
+        self.layers = []
+
+    def add(self, layer):
+        self.layers.append(layer)
+
+    def forward(self, x):
+        for layer in self.layers:
+            x = layer(x)
+        return x
+
+    def backward(self):
+        self.layers[-1].backward()
+
+class Linear(Tensor):
+    def __init__(self, in_features, out_features, requires_grad=True):
+        self.in_features = in_features
+        self.out_features = out_features
+        self.W = Tensor(np.random.randn(out_features, in_features), requires_grad)
+        self.b = Tensor(np.random.randn(out_features), requires_grad)
+
+    def __call__(self, x):
+        self.x = x
+        self.y = x @ self.W.data.T + self.b.data
+        return self.y
+    
+    def backward(self):
+        self.x.grad = self.W.data @ self.grad.T
+        self.W.grad = self.grad @ self.x.data
+        self.b.grad = self.grad.sum(axis=0)
+        self.x.backward()
+        self.W.backward()
+        self.b.backward()
+
