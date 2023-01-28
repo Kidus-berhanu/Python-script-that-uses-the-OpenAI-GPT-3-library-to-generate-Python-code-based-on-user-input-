@@ -1,0 +1,42 @@
+import torch
+
+class Tensor(torch.Tensor):
+    def __init__(self, data, requires_grad=False):
+        super().__init__(data)
+        self.requires_grad = requires_grad
+
+class NeuralNetwork(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layers = torch.nn.ModuleList()
+
+    def add(self, layer):
+        self.layers.append(layer)
+
+    def forward(self, x):
+        for layer in self.layers:
+            x = layer(x)
+        return x
+
+    def backward(self, loss_fn):
+        loss_fn.backward()
+
+    def zero_grad(self):
+        for layer in self.layers:
+            layer.zero_grad()
+
+    def step(self, optimizer):
+        optimizer.step()
+
+class Linear(torch.nn.Linear):
+    def __init__(self, in_features, out_features):
+        super().__init__(in_features, out_features)
+
+class Loss(torch.nn.Module):
+    def __init__(self, loss_fn):
+        super().__init__()
+        self.loss_fn = loss_fn
+
+    def forward(self, pred, target):
+        return self.loss_fn(pred, target)
+
