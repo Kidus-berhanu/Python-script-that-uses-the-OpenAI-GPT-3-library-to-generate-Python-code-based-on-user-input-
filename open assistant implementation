@@ -1,0 +1,76 @@
+class OpenAssistant:
+    def __init__(self):
+        self.task_map = {
+            "greeting": self.greeting,
+            "add": self.add,
+            "search": self.search,
+            "calculate": self.calculate,
+            "sort": self.sort,
+            "weather": self.weather,
+        }
+    
+    def handle_input(self, user_input):
+        tokens = user_input.strip().lower().split(" ")
+        task = self.task_map.get(tokens[0])
+        if task:
+            task(tokens[1:])
+        else:
+            self.default(tokens)
+    
+    def greeting(self, args):
+        print("Hello! How can I help you today?")
+    
+    def add(self, args):
+        try:
+            num1 = int(args[0])
+            num2 = int(args[1])
+            result = num1 + num2
+            print(f"The result is {result}.")
+        except (IndexError, ValueError):
+            print("Invalid input. Try again with 'add [num1] [num2]'.")
+    
+    def search(self, args):
+        query = " ".join(args)
+        # Code to interact with a third-party system to retrieve information goes here.
+        print(f"Results for '{query}':")
+    
+    def calculate(self, args):
+        try:
+            num1 = int(args[0])
+            operator = args[1]
+            num2 = int(args[2])
+            if operator == "+":
+                result = num1 + num2
+            elif operator == "-":
+                result = num1 - num2
+            elif operator == "*":
+                result = num1 * num2
+            elif operator == "/":
+                result = num1 / num2
+            else:
+                raise ValueError
+            print(f"The result is {result}.")
+        except (IndexError, ValueError):
+            print("Invalid input. Try again with 'calculate [num1] [operator] [num2]'.")
+    
+    def sort(self, args):
+        try:
+            numbers = [int(x) for x in args]
+            numbers.sort()
+            print(f"Sorted numbers: {numbers}")
+        except ValueError:
+            print("Invalid input. Try again with 'sort [num1] [num2] ... [numN]'.")
+    
+    def weather(self, args):
+        location = " ".join(args)
+        # Code to interact with a third-party system to retrieve weather information goes here.
+        print(f"Weather in '{location}':")
+    
+    def default(self, args):
+        print("I'm sorry, I didn't understand that.")
+
+if __name__ == "__main__":
+    assistant = OpenAssistant()
+    while True:
+        user_input = input("What can I help with? ")
+        assistant.handle_input(user_input)
