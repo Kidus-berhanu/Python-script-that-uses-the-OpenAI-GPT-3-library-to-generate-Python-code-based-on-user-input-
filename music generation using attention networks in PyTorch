@@ -1,0 +1,48 @@
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+class MusicGenerationModel(nn.Module):
+  def __init__(self, input_dim, hidden_dim, output_dim):
+    super(MusicGenerationModel, self).__init__()
+    self.input_layer = nn.Linear(input_dim, hidden_dim)
+    self.attention = nn.Linear(hidden_dim, hidden_dim)
+    self.output_layer = nn.Linear(hidden_dim, output_dim)
+  
+  def forward(self, x):
+    x = self.input_layer(x)
+    attention_weights = torch.softmax(self.attention(x), dim=1)
+    x = torch.sum(attention_weights * x, dim=1)
+    x = self.output_layer(x)
+    return x
+
+def train(model, data, target, criterion, optimizer, num_epochs):
+  for epoch in range(num_epochs):
+    model.train()
+    optimizer.zero_grad()
+    output = model(data)
+    loss = criterion(output, target)
+    loss.backward()
+    optimizer.step()
+    if (epoch + 1) % 100 == 0:
+      print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item()}')
+
+def generate_music(model, seed, sequence_length):
+  model.eval()
+  with torch.no_grad():
+    music = seed
+    for i in range(sequence_length):
+      music_input = music[i].unsqueeze(0)
+      output = model(music_input)
+      music = torch.cat((music, output), dim=0)
+  return music
+
+if __name__ == '__main__':
+  model = MusicGenerationModel(input_dim=128, hidden_dim=256, output_dim=64)
+  data = torch.randn(100, 128)
+  target = torch.randn(100, 64)
+  criterion = nn.MSELoss()
+  optimizer = optim.Adam(model.parameters(), lr=0.001)
+  train(model, data, target, criterion, optimizer, num_epochs=1000)
+  seed = torch.randn(1, 128)
+  generated_music = generate_music(model, seed, 100)
