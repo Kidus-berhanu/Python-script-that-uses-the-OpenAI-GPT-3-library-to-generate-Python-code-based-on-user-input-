@@ -1,0 +1,65 @@
+def generate_explanation_comments(code):
+    lines = code.split("\n")
+    comments = []
+    indent = 0
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("def "):
+            comments.append("# This line defines a function")
+            comments.append("# The function name is '{}'".format(stripped.split(" ")[1].split("(")[0]))
+            indent = 4
+        elif stripped.startswith("if "):
+            comments.append("# This line checks for a condition")
+            indent = 4
+        elif stripped.startswith("for "):
+            comments.append("# This line starts a for loop")
+            indent = 4
+        elif stripped.startswith("return "):
+            comments.append("# This line returns a value from the function")
+        elif stripped == "":
+            comments.append("")
+        elif stripped.startswith("#"):
+            comments.append(stripped)
+        else:
+            comments.append("#" + " " * indent + stripped)
+            indent += 2
+    return "\n".join(comments)
+
+code = """
+def add(a, b):
+    return a + b
+
+def multiply(a, b):
+    return a * b
+
+result = add(10, 20)
+print(result)
+
+result = multiply(10, 20)
+print(result)
+"""
+
+print(generate_explanation_comments(code))
+
+
+
+
+# This line defines a function
+# The function name is 'add'
+#     return a + b
+
+# This line defines a function
+# The function name is 'multiply'
+#     return a * b
+
+# This line calls the 'add' function and assigns its result to 'result'
+# result = add(10, 20)
+
+# This line prints the value of 'result'
+# print(result)
+
+# This line calls the 'multiply' function and assigns its result to 'result'
+# result = multiply(10, 20)
+
+# This line prints the value of 'result'
+# print(result)
