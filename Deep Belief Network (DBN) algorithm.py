@@ -1,4 +1,4 @@
-
+#kidus berhanu
 # Importing necessary libraries
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
